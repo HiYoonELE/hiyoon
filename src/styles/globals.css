@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #0B1F3A;
+  --navy-light: #1A3560;
+  --teal: #0E9F7E;
+  --teal-light: #E6F8F4;
+  --sky: #E8F4FD;
+  --slate: #6B7B8D;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Form elements */
+input, select, textarea {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--teal) !important;
+  box-shadow: 0 0 0 3px rgba(14, 159, 126, 0.1);
+}
+
+/* Smooth transitions */
+button {
+  transition: all 0.15s ease;
+}
+
+/* Option card selection */
+.option-card.selected {
+  border-color: var(--teal) !important;
+  background-color: var(--teal-light) !important;
+}
