@@ -157,4 +157,4 @@ supabase-schema.sql            # Full database schema — run in Supabase
 **V4**
 - Mobile app
 - Automated matching
-- SMS notifications
+- SMS notifications 
