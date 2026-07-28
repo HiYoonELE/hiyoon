@@ -1,3 +1,4 @@
+import React from 'react'
 import Navbar from '@/components/ui/Navbar'
 import Footer from '@/components/ui/Footer'
 import Link from 'next/link'
@@ -19,7 +20,7 @@ export default function HowItWorksPage() {
           {[
             { step: '1', title: 'Submit your request', body: 'Fill out our short guided form — it takes about 3 minutes. Tell us where you need to go, how many passengers, what kind of transportation, and when.' },
             { step: '2', title: 'We match you with providers', body: 'Our team reviews your request and identifies local providers who serve your area, match your transportation type, and have the right vehicle capabilities.' },
-            { step: '3', title: 'Providers respond', body: 'Matched providers receive your request and can submit a quote, express interest, or ask for more details. You don't need to do anything during this step.' },
+            { step: '3', title: 'Providers respond', body: 'Matched providers receive your request and can submit a quote, express interest, or ask for more details. You don\'t need to do anything during this step.' },
             { step: '4', title: 'You choose', body: 'We send you the best options. You review pricing, vehicle types, and availability — then choose the right fit or ask us for more help.' },
           ].map((s) => (
             <div key={s.step} className="flex gap-5 items-start">
