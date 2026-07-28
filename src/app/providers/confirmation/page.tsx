@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/ui/Navbar'
 
@@ -25,7 +26,7 @@ export default function ProviderConfirmationPage() {
             <div className="space-y-3">
               {[
                 'Our team reviews your application and service areas.',
-                'Once approved, you'll receive matched transportation requests by email.',
+                "Once approved, you'll receive matched transportation requests by email.",
                 'Respond with availability, quotes, or questions directly from each notification.',
               ].map((item, i) => (
                 <div key={i} className="flex gap-3 items-start">
