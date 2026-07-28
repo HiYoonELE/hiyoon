@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export function createClient() {
@@ -24,7 +24,6 @@ export function createClient() {
   )
 }
 
-// Service role client for admin operations (bypasses RLS)
 export function createAdminClient() {
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
