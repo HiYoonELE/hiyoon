@@ -7,24 +7,14 @@ import type { IntakeFormData } from '@/lib/types'
 
 const TOTAL_STEPS = 6
 
-const CATEGORIES = [
-  { label: 'School & Daycare', sub: 'Kids ages 3–18', icon: '🏫' },
-  { label: 'Senior Transportation', sub: 'Medical & daily trips', icon: '🏥' },
-  { label: 'NEMT', sub: 'Non-emergency medical', icon: '♿' },
-  { label: 'Group & Charter', sub: 'Events & programs', icon: '🚐' },
-  { label: 'Youth Programs', sub: 'Sports & after school', icon: '⚽' },
-  { label: 'Adult Day Programs', sub: 'Recurring routes', icon: '🌿' },
-  { label: 'Other', sub: 'Describe your need', icon: '✏️' },
-]
-
 const initialForm: IntakeFormData = {
-  category: '',
+  category: 'School & Daycare',
   pickup_address: '',
   dropoff_address: '',
   passenger_count: 1,
   passenger_age_grade: '',
   trip_type: '',
-  days_needed: 'Monday–Friday',
+  days_needed: 'Monday-Friday',
   pickup_time: '',
   return_time: '',
   start_date: '',
@@ -108,13 +98,14 @@ function RequestPageInner() {
 
           <div className="mb-8">
             <h1 className="text-2xl font-semibold mb-1" style={{ color: '#0B1F3A' }}>
-              Request transportation
+              Find school transportation
             </h1>
             <p className="text-sm text-gray-500">
-              Answer a few questions — we will find providers who can help.
+              Answer a few questions and we will match you with local providers.
             </p>
           </div>
 
+          {/* Progress */}
           <div className="mb-8">
             <div className="flex justify-between text-xs text-gray-400 mb-1.5">
               <span>Step {step} of {TOTAL_STEPS}</span>
@@ -128,54 +119,36 @@ function RequestPageInner() {
 
           <div className="bg-white rounded-2xl border border-gray-100 p-7" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
 
+            {/* STEP 1: Route */}
             {step === 1 && (
               <div>
                 <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>
-                  What type of transportation do you need?
+                  Where does your child need to go?
                 </h2>
-                <p className="text-sm text-gray-400 mb-6">Choose the one that fits best.</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {CATEGORIES.map((cat) => (
-                    <button key={cat.label} onClick={() => update('category', cat.label)}
-                      className={`text-left border-2 rounded-xl p-4 transition-all ${
-                        form.category === cat.label ? 'border-teal-500 bg-teal-50' : 'border-gray-100 hover:border-gray-300'
-                      }`}>
-                      <div className="text-xl mb-2">{cat.icon}</div>
-                      <div className="text-sm font-medium" style={{ color: '#0B1F3A' }}>{cat.label}</div>
-                      <div className="text-xs text-gray-400 mt-0.5">{cat.sub}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div>
-                <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>Where do passengers need to go?</h2>
-                <p className="text-sm text-gray-400 mb-6">Enter pickup and drop-off locations.</p>
+                <p className="text-sm text-gray-400 mb-6">Enter the pickup and drop-off locations.</p>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Pickup address</label>
+                    <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Home pickup address</label>
                     <input type="text" placeholder="123 Main St, Boston, MA" value={form.pickup_address}
                       onChange={(e) => update('pickup_address', e.target.value)}
                       className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Drop-off address</label>
-                    <input type="text" placeholder="456 School Ave, Roxbury, MA" value={form.dropoff_address}
+                    <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>School or daycare name & address</label>
+                    <input type="text" placeholder="Roxbury Prep, 120 Fisher Ave, Boston" value={form.dropoff_address}
                       onChange={(e) => update('dropoff_address', e.target.value)}
                       className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Number of passengers</label>
-                      <input type="number" min={1} max={100} placeholder="2" value={form.passenger_count}
+                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Number of children</label>
+                      <input type="number" min={1} max={20} placeholder="1" value={form.passenger_count}
                         onChange={(e) => update('passenger_count', parseInt(e.target.value))}
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Age or grade <span className="text-gray-400 font-normal">(optional)</span></label>
-                      <input type="text" placeholder="e.g. K-5, or age 67" value={form.passenger_age_grade}
+                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Grade or age</label>
+                      <input type="text" placeholder="e.g. Grade 3, or age 8" value={form.passenger_age_grade}
                         onChange={(e) => update('passenger_age_grade', e.target.value)}
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
                     </div>
@@ -184,20 +157,58 @@ function RequestPageInner() {
               </div>
             )}
 
+            {/* STEP 2: Schedule type */}
+            {step === 2 && (
+              <div>
+                <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>
+                  How often do you need transportation?
+                </h2>
+                <p className="text-sm text-gray-400 mb-6">Choose what fits your situation.</p>
+                <div className="space-y-3">
+                  {[
+                    { val: 'Recurring', label: 'Regular schedule', sub: 'Same days every week — most common for school routes' },
+                    { val: 'One-time', label: 'One-time trip', sub: 'A single pickup or drop-off' },
+                    { val: 'Flexible', label: 'Varies week to week', sub: 'Schedule changes depending on the week' },
+                  ].map((t) => (
+                    <button key={t.val} onClick={() => update('trip_type', t.val)}
+                      className={`w-full text-left p-4 border-2 rounded-xl transition-all ${
+                        form.trip_type === t.val ? 'border-teal-500 bg-teal-50' : 'border-gray-100 hover:border-gray-300'
+                      }`}>
+                      <div className="text-sm font-medium" style={{ color: '#0B1F3A' }}>{t.label}</div>
+                      <div className="text-xs text-gray-400 mt-0.5">{t.sub}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: Timing */}
             {step === 3 && (
               <div>
-                <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>When and how often?</h2>
-                <p className="text-sm text-gray-400 mb-6">Tell us the schedule.</p>
-                <div className="space-y-4">
+                <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>
+                  What are the school hours?
+                </h2>
+                <p className="text-sm text-gray-400 mb-6">
+                  This helps providers plan the route. Approximate times are fine.
+                </p>
+                <div className="space-y-5">
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#0B1F3A' }}>Trip frequency</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {['Recurring', 'One-time', 'Flexible'].map((t) => (
-                        <button key={t} onClick={() => update('trip_type', t)}
-                          className={`py-2.5 px-3 text-sm border-2 rounded-xl transition-all ${form.trip_type === t ? 'border-teal-500 bg-teal-50' : 'border-gray-100 hover:border-gray-300'}`}
-                          style={{ color: '#0B1F3A' }}>{t}</button>
-                      ))}
-                    </div>
+                    <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>
+                      What time does your child need to arrive at school?
+                    </label>
+                    <input type="time" value={form.pickup_time}
+                      onChange={(e) => update('pickup_time', e.target.value)}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
+                    <p className="text-xs text-gray-400 mt-1.5">The provider will plan pickup time to get them there on time.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>
+                      What time should they be picked up from school?
+                    </label>
+                    <input type="time" value={form.return_time}
+                      onChange={(e) => update('return_time', e.target.value)}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
+                    <p className="text-xs text-gray-400 mt-1.5">Leave blank if you only need a morning drop-off.</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Days needed</label>
@@ -207,30 +218,18 @@ function RequestPageInner() {
                       <option>Monday, Wednesday, Friday</option>
                       <option>Tuesday, Thursday</option>
                       <option>Weekdays only</option>
-                      <option>Weekends only</option>
                       <option>Custom</option>
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Morning pickup time</label>
-                      <input type="time" value={form.pickup_time} onChange={(e) => update('pickup_time', e.target.value)}
-                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Afternoon pickup <span className="text-gray-400 font-normal">(round trip)</span></label>
-                      <input type="time" value={form.return_time} onChange={(e) => update('return_time', e.target.value)}
-                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
                       <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Start date</label>
-                      <input type="date" value={form.start_date} onChange={(e) => update('start_date', e.target.value)}
+                      <input type="date" value={form.start_date}
+                        onChange={(e) => update('start_date', e.target.value)}
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>How long is service needed?</label>
+                      <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>How long needed?</label>
                       <select value={form.duration} onChange={(e) => update('duration', e.target.value)}
                         className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm">
                         <option>Ongoing / school year</option>
@@ -245,20 +244,23 @@ function RequestPageInner() {
               </div>
             )}
 
+            {/* STEP 4: Special requirements */}
             {step === 4 && (
               <div>
-                <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>Any special requirements?</h2>
-                <p className="text-sm text-gray-400 mb-6">Check all that apply.</p>
+                <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>
+                  Any special requirements?
+                </h2>
+                <p className="text-sm text-gray-400 mb-6">Check all that apply. We use this to find the right match.</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
                   {[
-                    { field: 'wheelchair_accessible', label: 'Wheelchair accessible' },
-                    { field: 'car_seat_needed', label: 'Car seat or booster' },
-                    { field: 'medical_monitoring', label: 'Medical monitoring' },
-                    { field: 'aide_needed', label: 'Aide or attendant' },
-                    { field: 'shared_ride_ok', label: 'Shared ride okay' },
+                    { field: 'car_seat_needed', label: 'Car seat or booster needed' },
+                    { field: 'wheelchair_accessible', label: 'Wheelchair accessible vehicle' },
+                    { field: 'aide_needed', label: 'Aide or monitor needed' },
+                    { field: 'shared_ride_ok', label: 'Shared ride is okay' },
                     { field: 'private_only', label: 'Private vehicle only' },
-                    { field: 'multilingual_driver', label: 'Multilingual driver' },
-                    { field: 'background_checked', label: 'Background-checked driver' },
+                    { field: 'multilingual_driver', label: 'Multilingual driver preferred' },
+                    { field: 'background_checked', label: 'Background-checked driver required' },
+                    { field: 'medical_monitoring', label: 'Medical monitoring needed' },
                   ].map(({ field, label }) => (
                     <label key={field} className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${
                       form[field as keyof IntakeFormData] ? 'border-teal-400 bg-teal-50' : 'border-gray-100 hover:border-gray-200'
@@ -280,10 +282,11 @@ function RequestPageInner() {
               </div>
             )}
 
+            {/* STEP 5: Budget & urgency */}
             {step === 5 && (
               <div>
                 <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>Budget and timing</h2>
-                <p className="text-sm text-gray-400 mb-6">Approximate is fine — this helps providers quote accurately.</p>
+                <p className="text-sm text-gray-400 mb-6">Approximate is fine — this helps providers give you accurate quotes.</p>
                 <div className="space-y-5">
                   <div>
                     <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Estimated monthly budget</label>
@@ -306,7 +309,9 @@ function RequestPageInner() {
                         { label: '1+ month', sub: 'No rush' },
                       ].map((u) => (
                         <button key={u.label} onClick={() => update('urgency', u.label)}
-                          className={`py-3 px-3 text-left border-2 rounded-xl transition-all ${form.urgency === u.label ? 'border-teal-500 bg-teal-50' : 'border-gray-100 hover:border-gray-300'}`}>
+                          className={`py-3 px-3 text-left border-2 rounded-xl transition-all ${
+                            form.urgency === u.label ? 'border-teal-500 bg-teal-50' : 'border-gray-100 hover:border-gray-300'
+                          }`}>
                           <div className="text-sm font-medium" style={{ color: '#0B1F3A' }}>{u.label}</div>
                           <div className="text-xs text-gray-400">{u.sub}</div>
                         </button>
@@ -317,10 +322,11 @@ function RequestPageInner() {
               </div>
             )}
 
+            {/* STEP 6: Contact */}
             {step === 6 && (
               <div>
                 <h2 className="text-xl font-medium mb-1" style={{ color: '#0B1F3A' }}>How do we reach you?</h2>
-                <p className="text-sm text-gray-400 mb-6">We will send your matched quotes here.</p>
+                <p className="text-sm text-gray-400 mb-6">We will send matched provider quotes here.</p>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Your name</label>
@@ -358,6 +364,7 @@ function RequestPageInner() {
               </div>
             )}
 
+            {/* Navigation */}
             <div className="flex gap-3 mt-8">
               {step > 1 && (
                 <button onClick={back}
@@ -366,7 +373,11 @@ function RequestPageInner() {
                 </button>
               )}
               {step < TOTAL_STEPS ? (
-                <button onClick={next} disabled={step === 1 && !form.category}
+                <button onClick={next}
+                  disabled={
+                    (step === 1 && (!form.pickup_address || !form.dropoff_address)) ||
+                    (step === 2 && !form.trip_type)
+                  }
                   className="flex-1 py-2.5 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-40"
                   style={{ background: '#0B1F3A' }}>
                   Continue
