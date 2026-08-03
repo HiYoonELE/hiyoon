@@ -7,7 +7,7 @@ import Footer from '@/components/ui/Footer'
 import type { ProviderFormData } from '@/lib/types'
 
 const CATEGORIES = ['School & Daycare', 'Senior Transportation', 'NEMT', 'Youth Programs', 'Group & Charter', 'Adult Day Programs']
-const VEHICLE_TYPES = ['Sedan / SUV', 'Minivan (7 seats)', 'Passenger van (12–15)', 'Wheelchair van', 'School bus', 'Charter bus']
+const VEHICLE_TYPES = ['Sedan / SUV', 'Minivan (7 seats)', 'Passenger van (12-15)', 'Wheelchair van', 'School bus', 'Charter bus']
 const CAPABILITIES = [
   { field: 'wheelchair_accessible', label: 'Wheelchair accessible' },
   { field: 'car_seats_available', label: 'Car seats available' },
@@ -15,6 +15,15 @@ const CAPABILITIES = [
   { field: 'one_time_trips', label: 'One-time trips' },
   { field: 'background_checked', label: 'Background-checked drivers' },
   { field: 'licensed_insured', label: 'Licensed & insured' },
+]
+
+const REQUIRED_DOCS = [
+  { id: 'cert_7d', label: '7D Driver Certificate', description: 'MA RMV-issued 7D certificate for each driver', required: true },
+  { id: 'certificate_of_insurance', label: 'Certificate of Insurance (COI)', description: 'Must show $100K/$300K/$5K minimum coverage', required: true },
+  { id: 'vehicle_registration', label: 'Vehicle Registration', description: 'MA registration for each 7D vehicle', required: true },
+  { id: 'cori_check', label: 'CORI Check Documentation', description: 'Criminal Offender Record Information clearance', required: false },
+  { id: 'vehicle_inspection', label: '7D Vehicle Inspection Certificate', description: 'Semi-annual inspection certificate', required: false },
+  { id: 'business_registration', label: 'Business Registration', description: 'LLC, corporation, or DBA documentation', required: false },
 ]
 
 const initial: ProviderFormData = {
@@ -44,6 +53,8 @@ export default function ProvidersPage() {
   const [form, setForm] = useState<ProviderFormData>(initial)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, File>>({})
+  const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({})
 
   const update = (field: keyof ProviderFormData, value: unknown) => {
     setForm((f) => ({ ...f, [field]: value }))
@@ -62,17 +73,50 @@ export default function ProvidersPage() {
     setForm((f) => ({ ...f, [field]: !f[field] }))
   }
 
+  const handleFileChange = (docId: string, file: File | null) => {
+    if (!file) return
+    const maxSize = 10 * 1024 * 1024
+    if (file.size > maxSize) {
+      setUploadErrors((prev) => ({ ...prev, [docId]: 'File must be under 10MB' }))
+      return
+    }
+    const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg']
+    if (!allowed.includes(file.type)) {
+      setUploadErrors((prev) => ({ ...prev, [docId]: 'Only PDF, JPG, or PNG files accepted' }))
+      return
+    }
+    setUploadErrors((prev) => ({ ...prev, [docId]: '' }))
+    setUploadedFiles((prev) => ({ ...prev, [docId]: file }))
+  }
+
+  const removeFile = (docId: string) => {
+    setUploadedFiles((prev) => {
+      const next = { ...prev }
+      delete next[docId]
+      return next
+    })
+  }
+
   const handleSubmit = async () => {
     if (!form.company_name || !form.email || !form.phone) {
       setError('Company name, email, and phone are required.')
       return
     }
+    const missingRequired = REQUIRED_DOCS.filter((d) => d.required && !uploadedFiles[d.id])
+    if (missingRequired.length > 0) {
+      setError(`Please upload the following required documents: ${missingRequired.map((d) => d.label).join(', ')}`)
+      return
+    }
     setSubmitting(true)
     try {
+      const formData = new FormData()
+      formData.append('data', JSON.stringify(form))
+      Object.entries(uploadedFiles).forEach(([key, file]) => {
+        formData.append(`doc_${key}`, file)
+      })
       const res = await fetch('/api/providers', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: formData,
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong')
@@ -94,7 +138,6 @@ export default function ProvidersPage() {
     <>
       <Navbar />
 
-      {/* Hero */}
       <section className="pt-16 pb-10 px-4 text-center" style={{ background: '#0B1F3A' }}>
         <div className="text-3xl mb-3">🚐</div>
         <h1 className="text-3xl font-semibold text-white mb-2">Join as a transportation provider</h1>
@@ -229,23 +272,90 @@ export default function ProvidersPage() {
             </div>
           </div>
 
+          <SectionLabel>Compliance documents</SectionLabel>
+          <p className="text-sm text-gray-500 mb-4 -mt-2">
+            Upload your credentials so our team can verify and approve your account faster. PDF, JPG, or PNG. Max 10MB per file.
+          </p>
+
+          <div className="space-y-3">
+            {REQUIRED_DOCS.map((doc) => {
+              const uploaded = uploadedFiles[doc.id]
+              const err = uploadErrors[doc.id]
+              return (
+                <div key={doc.id} className={`border rounded-xl p-4 transition-all ${
+                  uploaded ? 'border-teal-300 bg-teal-50' : 'border-gray-100'
+                }`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <span className="text-sm font-medium" style={{ color: '#0B1F3A' }}>{doc.label}</span>
+                        {doc.required ? (
+                          <span className="text-xs px-1.5 py-0.5 rounded-full font-medium" style={{ background: '#FEF3C7', color: '#92400E' }}>
+                            Required
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-400">Optional</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-400">{doc.description}</p>
+                    </div>
+
+                    {uploaded ? (
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="flex items-center gap-1.5 text-xs font-medium" style={{ color: '#0E9F7E' }}>
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M2.5 7l3 3 6-6" stroke="#0E9F7E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          Uploaded
+                        </div>
+                        <button onClick={() => removeFile(doc.id)}
+                          className="text-xs text-gray-400 hover:text-red-500 transition-colors">
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex-shrink-0 cursor-pointer">
+                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only"
+                          onChange={(e) => handleFileChange(doc.id, e.target.files?.[0] || null)} />
+                        <span className="inline-block px-3 py-1.5 text-xs font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer" style={{ color: '#0B1F3A' }}>
+                          Upload file
+                        </span>
+                      </label>
+                    )}
+                  </div>
+
+                  {uploaded && (
+                    <div className="mt-2 text-xs text-gray-500 truncate">
+                      {uploaded.name} ({(uploaded.size / 1024).toFixed(0)} KB)
+                    </div>
+                  )}
+
+                  {err && (
+                    <p className="mt-1.5 text-xs text-red-500">{err}</p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="mt-3 p-3 rounded-xl text-xs text-gray-500 leading-relaxed" style={{ background: '#F8FAFB' }}>
+            Your documents are reviewed only by the Route Bridge team for verification purposes. They are never shared publicly or with customers.
+          </div>
+
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-4">
+            <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-6">
               {error}
             </p>
           )}
 
           <div className="mt-8">
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
+            <button onClick={handleSubmit} disabled={submitting}
               className="w-full py-3 text-sm font-medium text-white rounded-xl transition-colors disabled:opacity-60"
-              style={{ background: '#0B1F3A' }}
-            >
+              style={{ background: '#0B1F3A' }}>
               {submitting ? 'Submitting application...' : 'Submit application'}
             </button>
             <p className="text-center text-xs text-gray-400 mt-3">
-              Our team reviews every application within 2–3 business days.
+              Our team reviews every application within 2-3 business days.
             </p>
           </div>
         </div>

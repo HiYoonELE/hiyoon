@@ -11,9 +11,11 @@ export type RequestStatus =
 
 export type ProviderStatus = 'pending' | 'approved' | 'rejected' | 'suspended'
 
-export type LeadMatchStatus = 'pending' | 'sent' | 'interested' | 'not_interested' | 'need_more_info'
+export type LeadMatchStatus = 'pending' | 'sent' | 'interested' | 'not_interested' | 'need_more_info' | 'quoted' | 'booked'
 
 export type QuoteStatus = 'submitted' | 'sent_to_customer' | 'accepted' | 'declined'
+
+export type BookingStatus = 'active' | 'completed' | 'cancelled' | 'fell_through'
 
 export interface Customer {
   id: string
@@ -34,7 +36,9 @@ export interface TransportationRequest {
   pickup_address: string
   dropoff_address: string
   pickup_city?: string
+  pickup_zip?: string
   dropoff_city?: string
+  dropoff_zip?: string
 
   passenger_count: number
   passenger_age_grade?: string
@@ -45,6 +49,7 @@ export interface TransportationRequest {
   return_time?: string
   start_date?: string
   duration?: string
+  duration_months?: number
 
   wheelchair_accessible: boolean
   car_seat_needed: boolean
@@ -58,6 +63,16 @@ export interface TransportationRequest {
 
   budget_range?: string
   urgency?: string
+  how_did_you_hear?: string
+  is_repeat_customer?: boolean
+
+  // Booking outcome
+  booked_price?: number
+  booked_price_period?: string
+  contract_value_monthly?: number
+  contract_value_annual?: number
+  winning_provider_id?: string
+  booked_at?: string
 
   status: RequestStatus
   admin_notes?: string
@@ -103,6 +118,12 @@ export interface LeadMatch {
   provider?: Provider
   sent_at?: string
   status: LeadMatchStatus
+  response_at?: string
+  response_type?: string
+  response_notes?: string
+  quoted_price?: number
+  quoted_price_period?: string
+  days_to_respond?: number
   created_at: string
 }
 
@@ -134,11 +155,113 @@ export interface AdminNote {
   created_at: string
 }
 
+export interface Booking {
+  id: string
+  request_id: string
+  provider_id: string
+  lead_match_id?: string
+  provider?: Provider
+  request?: TransportationRequest
+
+  monthly_price?: number
+  price_period: string
+  duration_months?: number
+  annual_value?: number
+  total_contract_value?: number
+
+  pickup_city?: string
+  pickup_zip?: string
+  dropoff_city?: string
+  dropoff_zip?: string
+  is_private: boolean
+  passenger_count?: number
+  category?: string
+
+  service_start_date?: string
+  service_end_date?: string
+  booked_at: string
+
+  status: BookingStatus
+  cancellation_reason?: string
+  ended_at?: string
+  notes?: string
+
+  created_at: string
+  updated_at: string
+}
+
+export interface ProviderPerformance {
+  provider_id: string
+  company_name: string
+  email: string
+  service_areas?: string[]
+  approval_status: string
+  total_leads_received: number
+  total_leads_responded: number
+  leads_interested: number
+  leads_quoted: number
+  total_bookings: number
+  win_rate_pct: number
+  avg_response_days: number
+  avg_booking_price: number
+  total_annual_value: number
+  last_lead_sent?: string
+  last_booking?: string
+}
+
+export interface GeographicIntelligence {
+  city: string
+  zip?: string
+  total_requests: number
+  total_booked: number
+  booking_rate_pct: number
+  private_requests: number
+  shared_requests: number
+  avg_monthly_spend?: number
+  max_monthly_spend?: number
+  min_monthly_spend?: number
+  total_annual_value?: number
+  car_seat_requests: number
+  wheelchair_requests: number
+}
+
+export interface LeadHistory {
+  lead_match_id: string
+  sent_at: string
+  lead_status: string
+  response_type?: string
+  response_at?: string
+  days_to_respond?: number
+  quoted_price?: number
+  quoted_price_period?: string
+  request_id: string
+  reference_number: string
+  category: string
+  pickup_address: string
+  dropoff_address: string
+  pickup_city?: string
+  dropoff_city?: string
+  passenger_count: number
+  request_status: string
+  booked_price?: number
+  provider_id: string
+  company_name: string
+  provider_email: string
+  booking_id?: string
+  booked_monthly_price?: number
+  booked_annual_value?: number
+  booking_status?: string
+}
+
 // Form submission types
 export interface IntakeFormData {
   category: string
   pickup_address: string
   dropoff_address: string
+  pickup_city?: string
+  pickup_zip?: string
+  dropoff_city?: string
+  dropoff_zip?: string
   passenger_count: number
   passenger_age_grade: string
   trip_type: string
@@ -147,6 +270,7 @@ export interface IntakeFormData {
   return_time: string
   start_date: string
   duration: string
+  duration_months?: number
   wheelchair_accessible: boolean
   car_seat_needed: boolean
   medical_monitoring: boolean
@@ -158,6 +282,7 @@ export interface IntakeFormData {
   special_notes: string
   budget_range: string
   urgency: string
+  how_did_you_hear: string
   name: string
   email: string
   phone: string
