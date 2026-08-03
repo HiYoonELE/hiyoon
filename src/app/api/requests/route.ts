@@ -67,19 +67,29 @@ export async function POST(req: NextRequest) {
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://routebridge.vercel.app'
 
-    // 3. Send customer confirmation email (non-blocking)
-    fetch(`${siteUrl}/api/notifications/customer-confirmation`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer, request }),
-    }).catch(console.error)
+    // 3. Send customer confirmation + admin notification.
+    // These are awaited (via Promise.allSettled) instead of fired-and-forgotten,
+    // because Vercel serverless functions can freeze/terminate immediately after
+    // the response is returned, which was silently dropping unawaited fetches.
+    const [confirmationResult, adminNotifyResult] = await Promise.allSettled([
+      fetch(`${siteUrl}/api/notifications/customer-confirmation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customer, request }),
+      }),
+      fetch(`${siteUrl}/api/notifications/new-request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId: request.id, customerName: body.name }),
+      }),
+    ])
 
-    // 4. Send admin notification (non-blocking)
-    fetch(`${siteUrl}/api/notifications/new-request`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ requestId: request.id, customerName: body.name }),
-    }).catch(console.error)
+    if (confirmationResult.status === 'rejected') {
+      console.error('Customer confirmation email failed:', confirmationResult.reason)
+    }
+    if (adminNotifyResult.status === 'rejected') {
+      console.error('Admin new-request notification failed:', adminNotifyResult.reason)
+    }
 
     return NextResponse.json({
       success: true,
