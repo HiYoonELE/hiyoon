@@ -1,10 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import type {
   TransportationRequest, Provider, LeadHistory,
-  Booking, ProviderPerformance, GeographicIntelligence
+  Booking, ProviderPerformance, GeographicIntelligence, Customer
 } from '@/lib/types'
 
 const STATUS_LABELS: Record<string, string> = {
