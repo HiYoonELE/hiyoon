@@ -34,6 +34,7 @@ const initialForm: IntakeFormData = {
   email: '',
   phone: '',
   preferred_contact: 'Email',
+  how_did_you_hear: '',
 }
 
 function RequestPageInner() {
