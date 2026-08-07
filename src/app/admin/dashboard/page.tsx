@@ -109,8 +109,8 @@ export default function AdminDashboard() {
   const openProviderDetail = (p: Provider) => {
     setSelectedProvider(p)
     setProviderNote(p.admin_notes || '')
-    setEmailSubject(`Your Route Bridge provider application — ${p.company_name}`)
-    setEmailBody(`Hi ${p.contact_person},\n\nThank you for applying to join Route Bridge.\n\n`)
+    setEmailSubject(`Your Hiyoon provider application — ${p.company_name}`)
+    setEmailBody(`Hi ${p.contact_person},\n\nThank you for applying to join Hiyoon.\n\n`)
     setEmailSent(false)
   }
 
@@ -203,7 +203,7 @@ export default function AdminDashboard() {
               <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: '#0B1F3A' }}>
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M8 2l6 6-6 6" stroke="#0E9F7E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
-              <span className="font-semibold text-sm" style={{ color: '#0B1F3A' }}>RouteBridge <span className="text-gray-400 font-normal">Admin</span></span>
+              <span className="font-semibold text-sm" style={{ color: '#0B1F3A' }}>Hi<span style={{ color: '#0E9F7E' }}>yoon</span> <span className="text-gray-400 font-normal">Admin</span></span>
             </div>
             <button onClick={handleLogout} className="text-xs text-gray-400 hover:text-gray-600">Sign out</button>
           </div>

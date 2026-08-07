@@ -2,14 +2,16 @@ import type { Metadata } from 'next'
 import '../styles/globals.css'
 
 export const metadata: Metadata = {
-  title: 'Route Bridge – Local Transportation Marketplace',
-  description: 'Find trusted local transportation providers for school runs, senior trips, NEMT routes, and more. Submit your need once and get matched with qualified providers.',
-  keywords: 'local transportation, school transportation, senior transportation, NEMT, van services, Boston',
+  title: 'Hiyoon – School Transportation Marketplace',
+  description: 'Find trusted local transportation providers for school runs, daycare pickup, and more. Submit your need once and get matched with qualified providers across Massachusetts.',
+  keywords: 'school transportation, daycare transportation, student transportation, Boston, Massachusetts, van services, school pickup',
   openGraph: {
-    title: 'Route Bridge',
-    description: 'Find local transportation providers for families, schools, and programs.',
+    title: 'Hiyoon',
+    description: 'School transportation, made simple. Find local providers for your child\'s route.',
     type: 'website',
+    url: 'https://hiyoon.com',
   },
+  metadataBase: new URL('https://hiyoon.com'),
 }
 
 export default function RootLayout({

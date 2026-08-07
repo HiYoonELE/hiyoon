@@ -14,11 +14,11 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="font-semibold" style={{ color: '#0B1F3A' }}>
-                Route<span style={{ color: '#0E9F7E' }}>Bridge</span>
+                Hi<span style={{ color: '#0E9F7E' }}>yoon</span>
               </span>
             </div>
             <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-              Connecting families, schools, and programs with trusted local transportation providers.
+              Connecting families, schools, and programs with trusted local transportation providers across Massachusetts.
             </p>
           </div>
 
@@ -27,7 +27,6 @@ export default function Footer() {
             <ul className="space-y-2">
               <li><Link href="/request" className="text-sm text-gray-500 hover:text-gray-900">Request transportation</Link></li>
               <li><Link href="/how-it-works" className="text-sm text-gray-500 hover:text-gray-900">How it works</Link></li>
-              <li><Link href="/categories" className="text-sm text-gray-500 hover:text-gray-900">Transportation types</Link></li>
             </ul>
           </div>
 
@@ -42,7 +41,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-100 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} RouteBridge. All rights reserved.
+            © {new Date().getFullYear()} Hiyoon. All rights reserved.
           </p>
           <div className="flex gap-4">
             <Link href="/privacy" className="text-xs text-gray-400 hover:text-gray-600">Privacy</Link>

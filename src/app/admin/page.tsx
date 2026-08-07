@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
               </svg>
             </div>
             <span className="font-semibold text-lg text-white">
-              Route<span style={{ color: '#0E9F7E' }}>Bridge</span>
+              Hi<span style={{ color: '#0E9F7E' }}>yoon</span>
             </span>
           </div>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>Admin access</p>

@@ -8,7 +8,7 @@ export default function HowItWorksPage() {
     <>
       <Navbar />
       <section className="pt-16 pb-10 px-4 text-center max-w-2xl mx-auto">
-        <h1 className="text-4xl font-semibold mb-4" style={{ color: '#0B1F3A' }}>How Route Bridge works</h1>
+        <h1 className="text-4xl font-semibold mb-4" style={{ color: '#0B1F3A' }}>How Hiyoon works</h1>
         <p className="text-lg text-gray-500">
           We connect people who need transportation with local providers who can deliver it — without the chaos of cold calls or endless searching.
         </p>
@@ -20,8 +20,8 @@ export default function HowItWorksPage() {
           {[
             { step: '1', title: 'Submit your request', body: 'Fill out our short guided form — it takes about 3 minutes. Tell us where you need to go, how many passengers, what kind of transportation, and when.' },
             { step: '2', title: 'We match you with providers', body: 'Our team reviews your request and identifies local providers who serve your area, match your transportation type, and have the right vehicle capabilities.' },
-            { step: '3', title: 'Providers respond', body: 'Matched providers receive your request and can submit a quote, express interest, or ask for more details. You don\'t need to do anything during this step.' },
-            { step: '4', title: 'You choose', body: 'We send you the best options. You review pricing, vehicle types, and availability — then choose the right fit or ask us for more help.' },
+            { step: '3', title: 'Providers respond', body: "Matched providers receive your request and can submit a quote directly. You'll get a personal link where you can see all offers as they come in — in real time." },
+            { step: '4', title: 'You choose', body: 'Review pricing, vehicle types, and availability on your personal offer page — then select the provider that fits best. Confirmation is instant.' },
           ].map((s) => (
             <div key={s.step} className="flex gap-5 items-start">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-semibold flex-shrink-0" style={{ background: '#0B1F3A', color: '#0E9F7E' }}>{s.step}</div>

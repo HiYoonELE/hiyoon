@@ -19,29 +19,19 @@ export default function Navbar() {
               </svg>
             </div>
             <span className="font-semibold text-lg" style={{ color: '#0B1F3A' }}>
-              Route<span style={{ color: '#0E9F7E' }}>Bridge</span>
+              Hi<span style={{ color: '#0E9F7E' }}>yoon</span>
             </span>
           </Link>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-2">
-            <Link
-              href="/providers"
-              className="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-            >
+            <Link href="/providers" className="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
               For providers
             </Link>
-            <Link
-              href="/how-it-works"
-              className="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-            >
+            <Link href="/how-it-works" className="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
               How it works
             </Link>
-            <Link
-              href="/request"
-              className="ml-2 px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-colors"
-              style={{ background: '#0B1F3A' }}
-            >
+            <Link href="/request" className="ml-2 px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-colors" style={{ background: '#0B1F3A' }}>
               Request transportation
             </Link>
           </div>
@@ -56,9 +46,7 @@ export default function Navbar() {
               {menuOpen ? (
                 <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               ) : (
-                <>
-                  <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </>
+                <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               )}
             </svg>
           </button>
@@ -73,11 +61,7 @@ export default function Navbar() {
             <Link href="/how-it-works" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg">
               How it works
             </Link>
-            <Link
-              href="/request"
-              className="block mx-0 mt-2 px-4 py-2.5 text-sm font-medium text-white rounded-lg text-center"
-              style={{ background: '#0B1F3A' }}
-            >
+            <Link href="/request" className="block mx-0 mt-2 px-4 py-2.5 text-sm font-medium text-white rounded-lg text-center" style={{ background: '#0B1F3A' }}>
               Request transportation
             </Link>
           </div>

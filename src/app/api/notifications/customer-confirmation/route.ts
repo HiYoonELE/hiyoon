@@ -11,10 +11,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Email not configured' }, { status: 500 })
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://routebridge.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
     const offerPageUrl = `${siteUrl}/offers/${request.offer_token}`
 
-    // Calculate offer deadline
     const isAsap = request.urgency === 'ASAP'
     const hours = isAsap ? 24 : 48
     const deadline = new Date(Date.now() + hours * 60 * 60 * 1000)
@@ -25,8 +24,8 @@ export async function POST(req: NextRequest) {
     const html = `
       <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: #0B1F3A; padding: 28px 24px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: #fff; margin: 0 0 4px; font-size: 22px; font-weight: 600;">
-            Route<span style="color: #0E9F7E;">Bridge</span>
+          <h1 style="color: #fff; margin: 0 0 4px; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">
+            Hi<span style="color: #0E9F7E;">yoon</span>
           </h1>
           <p style="color: rgba(255,255,255,0.55); margin: 0; font-size: 13px;">School transportation marketplace</p>
         </div>
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest) {
             Your request has been received
           </h2>
           <p style="color: #6B7B8D; font-size: 14px; line-height: 1.6; margin: 0 0 20px;">
-            Hi ${customer.name}, we received your transportation request and are matching it with local providers in your area. You'll receive quotes directly on your personal offer page.
+            Hi ${customer.name}, we received your transportation request and are matching it with local providers in your area. Quotes will appear on your personal offer page as they come in.
           </p>
 
           <div style="background: #F8FAFB; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px;">
@@ -47,7 +46,7 @@ export async function POST(req: NextRequest) {
               </tr>
               <tr style="border-bottom: 1px solid #E2E8F0;">
                 <td style="padding: 8px 0; font-size: 13px; color: #6B7B8D;">Route</td>
-                <td style="padding: 8px 0; font-size: 13px; color: #0B1F3A;">${request.pickup_address} → ${request.dropoff_address}</td>
+                <td style="padding: 8px 0; font-size: 13px; color: #0B1F3A;">${request.pickup_address} &rarr; ${request.dropoff_address}</td>
               </tr>
               <tr style="border-bottom: 1px solid #E2E8F0;">
                 <td style="padding: 8px 0; font-size: 13px; color: #6B7B8D;">Category</td>
@@ -55,7 +54,7 @@ export async function POST(req: NextRequest) {
               </tr>
               <tr style="border-bottom: 1px solid #E2E8F0;">
                 <td style="padding: 8px 0; font-size: 13px; color: #6B7B8D;">Schedule</td>
-                <td style="padding: 8px 0; font-size: 13px; color: #0B1F3A;">${request.trip_type} · ${request.days_needed || 'TBD'}</td>
+                <td style="padding: 8px 0; font-size: 13px; color: #0B1F3A;">${request.trip_type} &middot; ${request.days_needed || 'TBD'}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-size: 13px; color: #6B7B8D;">Offers close</td>
@@ -65,12 +64,11 @@ export async function POST(req: NextRequest) {
           </div>
 
           <p style="color: #6B7B8D; font-size: 13px; line-height: 1.6; margin: 0 0 20px;">
-            As providers respond, their quotes will appear on your personal offer page below. You can check back anytime — new offers update in real time.
+            As providers respond, their quotes will appear on your personal offer page below. Check back anytime — new offers update in real time.
           </p>
 
           <div style="text-align: center; margin: 24px 0;">
-            <a href="${offerPageUrl}"
-              style="display: inline-block; background: #0E9F7E; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-size: 15px; font-weight: 600;">
+            <a href="${offerPageUrl}" style="display: inline-block; background: #0E9F7E; color: #fff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-size: 15px; font-weight: 600;">
               View My Offers
             </a>
           </div>
@@ -90,7 +88,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Route Bridge <hello@routebridge.com>',
+        from: 'Hiyoon <hello@hiyoon.com>',
         to: [customer.email],
         reply_to: process.env.ADMIN_EMAIL,
         subject: `Your request is in — ${request.reference_number}`,

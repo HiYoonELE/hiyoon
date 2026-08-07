@@ -14,7 +14,7 @@ export default function HomePage() {
           {/* Logo */}
           <div className="mb-8 text-center">
             <h1 className="font-semibold" style={{ fontSize: '52px', color: '#0B1F3A', letterSpacing: '-1px', lineHeight: 1 }}>
-              Route<span style={{ color: '#0E9F7E' }}>Bridge</span>
+              Hi<span style={{ color: '#0E9F7E' }}>yoon</span>
             </h1>
             <p className="mt-3 text-base" style={{ color: '#6B7B8D' }}>
               School transportation, made simple
@@ -24,7 +24,7 @@ export default function HomePage() {
           {/* Search bar */}
           <Link
             href="/request"
-            className="w-full max-w-xl flex items-center gap-3 px-5 py-4 rounded-full border-2 border-gray-200 hover:border-gray-300 hover:shadow-md transition-all group"
+            className="w-full max-w-xl flex items-center gap-3 px-5 py-4 rounded-full border-2 border-gray-200 hover:border-gray-300 hover:shadow-md transition-all"
             style={{ background: '#fff' }}
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ color: '#9CA3AF', flexShrink: 0 }}>
@@ -36,18 +36,10 @@ export default function HomePage() {
 
           {/* CTA buttons */}
           <div className="flex gap-3 mt-6">
-            <Link
-              href="/request"
-              className="px-6 py-2.5 text-sm font-medium rounded-lg transition-colors"
-              style={{ background: '#F1F3F4', color: '#3C4043' }}
-            >
+            <Link href="/request" className="px-6 py-2.5 text-sm font-medium rounded-lg transition-colors" style={{ background: '#F1F3F4', color: '#3C4043' }}>
               Find transportation
             </Link>
-            <Link
-              href="/providers"
-              className="px-6 py-2.5 text-sm font-medium rounded-lg transition-colors"
-              style={{ background: '#F1F3F4', color: '#3C4043' }}
-            >
+            <Link href="/providers" className="px-6 py-2.5 text-sm font-medium rounded-lg transition-colors" style={{ background: '#F1F3F4', color: '#3C4043' }}>
               Join as a provider
             </Link>
           </div>
@@ -62,7 +54,7 @@ export default function HomePage() {
         <div className="border-t border-gray-100">
           <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <p className="text-xs" style={{ color: '#70757A' }}>
-              &copy; {new Date().getFullYear()} RouteBridge
+              &copy; {new Date().getFullYear()} Hiyoon
             </p>
             <div className="flex gap-5">
               <Link href="/how-it-works" className="text-xs hover:underline" style={{ color: '#70757A' }}>How it works</Link>
