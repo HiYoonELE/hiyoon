@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
 
     if (reqErr) throw reqErr
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://routebridge.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
 
     // 3. Send customer confirmation + admin notification.
     // These are awaited (via Promise.allSettled) instead of fired-and-forgotten,

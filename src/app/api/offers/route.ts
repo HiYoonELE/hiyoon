@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
     })
 
     // Send confirmation emails (non-blocking)
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://routebridge.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
     const customer = request.customer as Record<string, string>
     const provider = quote.provider as Record<string, string>
 

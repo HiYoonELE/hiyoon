@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = createAdminClient()
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://routebridge.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
 
     // Fetch the request
     const { data: request, error: reqErr } = await supabase
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
         <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: #0B1F3A; padding: 24px; border-radius: 12px 12px 0 0;">
             <h1 style="color: #fff; margin: 0; font-size: 20px; font-weight: 600;">New Transportation Lead</h1>
-            <p style="color: rgba(255,255,255,0.6); margin: 4px 0 0; font-size: 14px;">Route Bridge — matched for ${provider.company_name}</p>
+            <p style="color: rgba(255,255,255,0.6); margin: 4px 0 0; font-size: 14px;">Hiyoon — matched for ${provider.company_name}</p>
           </div>
 
           <div style="background: #fff; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 12px 12px; padding: 24px;">
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
             </div>
 
             <p style="text-align: center; color: #94A3B8; font-size: 12px; margin-top: 16px;">
-              Reference: ${request.reference_number} — Route Bridge
+              Reference: ${request.reference_number} — Hiyoon
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'Route Bridge <leads@routebridge.com>',
+          from: 'Hiyoon <leads@hiyoon.com>',
           to: [provider.email],
           reply_to: process.env.ADMIN_EMAIL,
           subject: `New transportation lead: ${request.category} — ${request.pickup_address}`,

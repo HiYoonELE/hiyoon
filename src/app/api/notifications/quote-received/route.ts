@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
 
     const provider = match.provider as Record<string, string>
     const request = match.request as Record<string, string>
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://routebridge.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
 
     const html = `
       <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: #0B1F3A; padding: 24px; border-radius: 12px 12px 0 0;">
           <h1 style="color: #fff; margin: 0; font-size: 18px; font-weight: 600;">New Quote Received</h1>
-          <p style="color: rgba(255,255,255,0.6); margin: 4px 0 0; font-size: 13px;">Route Bridge Admin</p>
+          <p style="color: rgba(255,255,255,0.6); margin: 4px 0 0; font-size: 13px;">Hiyoon Admin</p>
         </div>
         <div style="background: #fff; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 12px 12px; padding: 24px;">
           <table style="width: 100%; border-collapse: collapse;">
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Route Bridge <alerts@routebridge.com>',
+        from: 'Hiyoon <alerts@hiyoon.com>',
         to: [adminEmail],
         subject: `New quote from ${provider.company_name} — ${request.reference_number}`,
         html,

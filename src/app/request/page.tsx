@@ -136,7 +136,7 @@ function RequestPageInner() {
     {
       field: 'background_checked',
       label: 'Background-checked driver required',
-      tip: 'The driver has passed a criminal background check. All providers on Route Bridge are encouraged to use background-checked drivers — this flags it as a firm requirement.',
+      tip: 'The driver has passed a criminal background check. All providers on Hiyoon are encouraged to use background-checked drivers — this flags it as a firm requirement.',
     },
     {
       field: 'medical_monitoring',
@@ -385,7 +385,7 @@ function RequestPageInner() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>
-                      How did you hear about Route Bridge? <span className="text-gray-400 font-normal">(optional)</span>
+                      How did you hear about Hiyoon? <span className="text-gray-400 font-normal">(optional)</span>
                     </label>
                     <select value={form.how_did_you_hear} onChange={(e) => update('how_did_you_hear', e.target.value)}
                       className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm">

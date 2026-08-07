@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
 
     // Notify admin
     try {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://routebridge.vercel.app'
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
       await fetch(`${siteUrl}/api/notifications/quote-received`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

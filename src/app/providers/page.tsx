@@ -339,7 +339,7 @@ export default function ProvidersPage() {
           </div>
 
           <div className="mt-3 p-3 rounded-xl text-xs text-gray-500 leading-relaxed" style={{ background: '#F8FAFB' }}>
-            Your documents are reviewed only by the Route Bridge team for verification purposes. They are never shared publicly or with customers.
+            Your documents are reviewed only by the Hiyoon team for verification purposes. They are never shared publicly or with customers.
           </div>
 
           {error && (
