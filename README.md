@@ -42,7 +42,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 RESEND_API_KEY=your-resend-api-key
-ADMIN_EMAIL=admin@routebridge.com
+ADMIN_EMAIL=admin@hiyoon.com
 
 ADMIN_SECRET=choose-a-strong-password-here
 
