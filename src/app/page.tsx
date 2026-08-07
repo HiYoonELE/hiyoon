@@ -42,7 +42,7 @@ export default function HomePage() {
           }
 
           .yoon-glow {
-            animation: glowYoon 1.4s ease 0.5s 1 forwards;
+            animation: glowYoon 1.4s ease 1.8s 1 forwards;
           }
 
           .search-bar {
@@ -71,8 +71,8 @@ export default function HomePage() {
               H
               {/* i with animated dot */}
               <span style={{ position: 'relative', display: 'inline-block' }}>
-                {/* The letter i without its dot */}
-                <span style={{ display: 'inline-block' }}>i</span>
+                {/* The letter i without its dot (dotless-ı) */}
+                <span style={{ display: 'inline-block' }}>ı</span>
                 {/* Animated dot overlaid */}
                 <span
                   className="dot-wave"
