@@ -162,7 +162,7 @@ export default function OffersPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="font-semibold text-lg mb-4" style={{ color: '#0B1F3A' }}>
-            Route<span style={{ color: '#0E9F7E' }}>Bridge</span>
+            Hi<span style={{ color: '#0E9F7E' }}>yoon</span>
           </div>
           <h1 className="text-2xl font-semibold mb-1" style={{ color: '#0B1F3A' }}>Your transportation offers</h1>
           <p className="text-sm text-gray-500">
@@ -283,7 +283,7 @@ export default function OffersPage() {
 
         <p className="text-center text-xs text-gray-400 mt-8">
           This page updates automatically. Bookmark it to check for new offers.
-          <br/>Questions? Contact us at <a href={`mailto:${process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'hello@routebridge.com'}`} className="underline">hello@routebridge.com</a>
+          <br/>Questions? Contact us at <a href={`mailto:${process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'hello@hiyoon.com'}`} className="underline">hello@hiyoon.com</a>
         </p>
       </div>
     </div>
