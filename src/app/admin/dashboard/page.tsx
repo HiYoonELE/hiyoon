@@ -98,6 +98,24 @@ export default function AdminDashboard() {
     if (selectedProvider?.id === id) setSelectedProvider((p) => p ? { ...p, approval_status: approval_status as Provider['approval_status'] } : p)
   }
 
+  const deleteRequest = async (id: string) => {
+    if (!confirm('Delete this request? This cannot be undone.')) return
+    const res = await fetch(`/api/requests/${id}`, { method: 'DELETE' })
+    const data = await res.json()
+    if (!res.ok) { alert(data.error || 'Failed to delete request.'); return }
+    setRequests((rs) => rs.filter((r) => r.id !== id))
+    if (selected?.id === id) setSelected(null)
+  }
+
+  const deleteProvider = async (id: string) => {
+    if (!confirm('Delete this provider? This cannot be undone.')) return
+    const res = await fetch(`/api/providers/${id}`, { method: 'DELETE' })
+    const data = await res.json()
+    if (!res.ok) { alert(data.error || 'Failed to delete provider.'); return }
+    setProviders((ps) => ps.filter((p) => p.id !== id))
+    if (selectedProvider?.id === id) setSelectedProvider(null)
+  }
+
   const saveProviderNote = async () => {
     if (!selectedProvider) return
     setSavingNote(true)
@@ -270,6 +288,9 @@ export default function AdminDashboard() {
                           <select value={r.status} onChange={(e) => { e.stopPropagation(); updateStatus(r.id, e.target.value) }} onClick={(e) => e.stopPropagation()} className="text-xs border border-gray-200 rounded-lg px-2 py-1 flex-shrink-0">
                             {Object.entries(STATUS_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
                           </select>
+                          <button onClick={(e) => { e.stopPropagation(); deleteRequest(r.id) }} title="Delete request" className="flex-shrink-0 p-1.5 text-gray-300 hover:text-red-500 rounded-lg hover:bg-red-50">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16Z"/></svg>
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -316,6 +337,7 @@ export default function AdminDashboard() {
                     <a href={`mailto:${selected.customer?.email}`} className="flex-1 py-2 text-xs text-center border border-gray-200 rounded-lg hover:bg-gray-50" style={{ color: '#0B1F3A' }}>Email customer</a>
                     <button onClick={() => { setTab('leads'); setLeadRequest(selected.id) }} className="flex-1 py-2 text-xs text-center rounded-lg font-medium text-white" style={{ background: '#0E9F7E' }}>Send leads</button>
                   </div>
+                  <button onClick={() => deleteRequest(selected.id)} className="mt-2 w-full py-2 text-xs text-center border border-red-200 text-red-600 rounded-lg hover:bg-red-50">Delete request</button>
                 </div>
               )}
             </>
@@ -348,7 +370,7 @@ export default function AdminDashboard() {
                             <div className="text-xs text-gray-400 mt-0.5">{p.contact_person} · {p.email}</div>
                             {p.service_areas && p.service_areas.length > 0 && <div className="text-xs text-gray-400 mt-0.5">{p.service_areas.slice(0, 3).join(', ')}</div>}
                           </div>
-                          <div className="flex gap-2 flex-shrink-0">
+                          <div className="flex gap-2 flex-shrink-0 items-center">
                             {p.approval_status === 'pending' ? (
                               <>
                                 <button onClick={(e) => { e.stopPropagation(); updateProviderStatus(p.id, 'approved') }} className="text-xs px-3 py-1.5 rounded-lg font-medium text-white" style={{ background: '#0E9F7E' }}>Approve</button>
@@ -363,6 +385,9 @@ export default function AdminDashboard() {
                                 <option value="suspended">Suspended</option>
                               </select>
                             )}
+                            <button onClick={(e) => { e.stopPropagation(); deleteProvider(p.id) }} title="Delete provider" className="flex-shrink-0 p-1.5 text-gray-300 hover:text-red-500 rounded-lg hover:bg-red-50">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16Z"/></svg>
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -449,6 +474,7 @@ export default function AdminDashboard() {
                       {emailSent ? '✓ Email opened' : 'Open email'}
                     </button>
                   </div>
+                  <button onClick={() => deleteProvider(selectedProvider.id)} className="mt-4 w-full py-2 text-xs text-center border border-red-200 text-red-600 rounded-lg hover:bg-red-50">Delete provider</button>
                 </div>
               )}
             </>

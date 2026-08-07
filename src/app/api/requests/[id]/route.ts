@@ -45,3 +45,37 @@ export async function GET(
     return NextResponse.json({ error: 'Failed to fetch request' }, { status: 500 })
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = req.cookies.get('admin_session')?.value
+  if (!session || session !== process.env.ADMIN_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  try {
+    const supabase = createAdminClient()
+
+    const [{ count: quoteCount }, { count: leadCount }, { count: bookingCount }] = await Promise.all([
+      supabase.from('quotes').select('id', { count: 'exact', head: true }).eq('request_id', params.id),
+      supabase.from('lead_matches').select('id', { count: 'exact', head: true }).eq('request_id', params.id),
+      supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('request_id', params.id),
+    ])
+
+    if ((quoteCount || 0) > 0 || (leadCount || 0) > 0 || (bookingCount || 0) > 0) {
+      return NextResponse.json(
+        { error: 'This request has leads, quotes, or a booking attached. Remove those first.' },
+        { status: 409 }
+      )
+    }
+
+    const { error } = await supabase.from('transportation_requests').delete().eq('id', params.id)
+    if (error) throw error
+
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Failed to delete request' }, { status: 500 })
+  }
+}
