@@ -9,7 +9,7 @@ export default function HomePage() {
       <div className="min-h-screen flex flex-col" style={{ background: '#fff' }}>
 
         {/* Main centered content */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4" style={{ marginTop: '-64px' }}>
+        <div className="flex-1 flex flex-col items-center justify-start sm:justify-center px-4 pt-10 sm:pt-0 sm:-mt-16">
 
           {/* Logo */}
           <div className="mb-8 text-center">
