@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     const newDocIds: string[] = []
     const attachments: { filename: string; content: string }[] = []
-    for (const [key, value] of formData.entries()) {
+    for (const [key, value] of Array.from(formData.entries())) {
       if (key.startsWith('doc_') && value instanceof File) {
         const docId = key.slice('doc_'.length)
         newDocIds.push(docId)
