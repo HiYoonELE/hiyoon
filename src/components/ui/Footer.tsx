@@ -27,6 +27,8 @@ export default function Footer() {
             <ul className="space-y-2">
               <li><Link href="/request" className="text-sm text-gray-500 hover:text-gray-900">Request transportation</Link></li>
               <li><Link href="/how-it-works" className="text-sm text-gray-500 hover:text-gray-900">How it works</Link></li>
+              <li><Link href="/faq" className="text-sm text-gray-500 hover:text-gray-900">FAQ</Link></li>
+              <li><Link href="/contact" className="text-sm text-gray-500 hover:text-gray-900">Contact us</Link></li>
             </ul>
           </div>
 
@@ -34,7 +36,8 @@ export default function Footer() {
             <h4 className="text-sm font-medium text-gray-900 mb-3">Providers</h4>
             <ul className="space-y-2">
               <li><Link href="/providers" className="text-sm text-gray-500 hover:text-gray-900">Join as a provider</Link></li>
-              <li><Link href="/providers#faq" className="text-sm text-gray-500 hover:text-gray-900">Provider FAQ</Link></li>
+              <li><Link href="/providers/faq" className="text-sm text-gray-500 hover:text-gray-900">Provider FAQ</Link></li>
+              <li><Link href="/contact" className="text-sm text-gray-500 hover:text-gray-900">Contact us</Link></li>
             </ul>
           </div>
         </div>
