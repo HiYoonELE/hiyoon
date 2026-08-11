@@ -107,6 +107,8 @@ export interface Provider {
 
   approval_status: ProviderStatus
   admin_notes?: string
+  application_token?: string
+  submitted_documents?: string[]
   created_at: string
   updated_at: string
 }

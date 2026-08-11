@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Navbar from '@/components/ui/Navbar'
 import Footer from '@/components/ui/Footer'
 import type { ProviderFormData } from '@/lib/types'
+import { REQUIRED_DOCS } from '@/lib/providerDocs'
 
 const CATEGORIES = ['School & Daycare', 'Senior Transportation', 'NEMT', 'Youth Programs', 'Group & Charter', 'Adult Day Programs']
 const VEHICLE_TYPES = ['Sedan / SUV', 'Minivan (7 seats)', 'Passenger van (12-15)', 'Wheelchair van', 'School bus', 'Charter bus']
@@ -15,15 +16,6 @@ const CAPABILITIES = [
   { field: 'one_time_trips', label: 'One-time trips' },
   { field: 'background_checked', label: 'Background-checked drivers' },
   { field: 'licensed_insured', label: 'Licensed & insured' },
-]
-
-const REQUIRED_DOCS = [
-  { id: 'cert_7d', label: '7D Driver Certificate', description: 'MA RMV-issued 7D certificate for each driver', required: true },
-  { id: 'certificate_of_insurance', label: 'Certificate of Insurance (COI)', description: 'Must show $100K/$300K/$5K minimum coverage', required: true },
-  { id: 'vehicle_registration', label: 'Vehicle Registration', description: 'MA registration for each 7D vehicle', required: true },
-  { id: 'cori_check', label: 'CORI Check Documentation', description: 'Criminal Offender Record Information clearance', required: false },
-  { id: 'vehicle_inspection', label: '7D Vehicle Inspection Certificate', description: 'Semi-annual inspection certificate', required: false },
-  { id: 'business_registration', label: 'Business Registration', description: 'LLC, corporation, or DBA documentation', required: false },
 ]
 
 const initial: ProviderFormData = {
@@ -102,11 +94,6 @@ export default function ProvidersPage() {
       setError('Company name, email, and phone are required.')
       return
     }
-    const missingRequired = REQUIRED_DOCS.filter((d) => d.required && !uploadedFiles[d.id])
-    if (missingRequired.length > 0) {
-      setError(`Please upload the following required documents: ${missingRequired.map((d) => d.label).join(', ')}`)
-      return
-    }
     setSubmitting(true)
     try {
       const formData = new FormData()
@@ -120,7 +107,7 @@ export default function ProvidersPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong')
-      router.push('/providers/confirmation')
+      router.push(`/providers/confirmation?token=${data.application_token}&complete=${data.docs_complete}`)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
@@ -274,7 +261,7 @@ export default function ProvidersPage() {
 
           <SectionLabel>Compliance documents</SectionLabel>
           <p className="text-sm text-gray-500 mb-4 -mt-2">
-            Upload your credentials so our team can verify and approve your account faster. PDF, JPG, or PNG. Max 10MB per file.
+            Upload what you have now, or skip this and add it later — we won&apos;t approve your account until all required documents are in, but you can submit your application today and finish this part whenever you&apos;re ready. PDF, JPG, or PNG. Max 10MB per file.
           </p>
 
           <div className="space-y-3">

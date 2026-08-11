@@ -2,7 +2,14 @@ import React from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/ui/Navbar'
 
-export default function ProviderConfirmationPage() {
+export default function ProviderConfirmationPage({
+  searchParams,
+}: {
+  searchParams: { token?: string; complete?: string }
+}) {
+  const docsComplete = searchParams.complete !== 'false'
+  const resumeUrl = searchParams.token ? `/providers/complete/${searchParams.token}` : null
+
   return (
     <>
       <Navbar />
@@ -17,6 +24,18 @@ export default function ProviderConfirmationPage() {
           <p className="text-sm text-gray-500 leading-relaxed mb-6">
             Our team reviews every provider to make sure families get quality options. We'll be in touch within 2–3 business days.
           </p>
+
+          {!docsComplete && resumeUrl && (
+            <div className="border rounded-2xl p-5 text-left mb-6" style={{ background: '#FEF3C7', borderColor: '#FDE68A' }}>
+              <h3 className="text-sm font-medium mb-1.5" style={{ color: '#92400E' }}>Compliance documents still needed</h3>
+              <p className="text-sm mb-3" style={{ color: '#92400E' }}>
+                We won't be able to approve your account until we've received your required documents. We've emailed you a link so you can add them anytime — no need to finish today.
+              </p>
+              <Link href={resumeUrl} className="inline-block px-4 py-2 text-xs font-medium text-white rounded-lg" style={{ background: '#92400E' }}>
+                Finish my application
+              </Link>
+            </div>
+          )}
 
           <div className="bg-white border border-gray-100 rounded-2xl p-6 text-left mb-6">
             <h3 className="text-sm font-medium mb-4" style={{ color: '#0B1F3A' }}>What to expect</h3>

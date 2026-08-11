@@ -6,6 +6,7 @@ import type {
   TransportationRequest, Provider, LeadHistory,
   Booking, ProviderPerformance, GeographicIntelligence, Customer
 } from '@/lib/types'
+import { REQUIRED_DOCS, missingRequiredDocs } from '@/lib/providerDocs'
 
 const STATUS_LABELS: Record<string, string> = {
   new: 'New', reviewed: 'Reviewed', sent_to_providers: 'Sent to providers',
@@ -366,6 +367,9 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-2">
                               <div className="text-sm font-medium" style={{ color: '#0B1F3A' }}>{p.company_name}</div>
                               {p.approval_status === 'pending' && <span className="text-xs px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 font-medium">Pending</span>}
+                              {p.approval_status === 'pending' && missingRequiredDocs(p.submitted_documents || []).length > 0 && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-medium">Docs missing</span>
+                              )}
                             </div>
                             <div className="text-xs text-gray-400 mt-0.5">{p.contact_person} · {p.email}</div>
                             {p.service_areas && p.service_areas.length > 0 && <div className="text-xs text-gray-400 mt-0.5">{p.service_areas.slice(0, 3).join(', ')}</div>}
@@ -420,6 +424,24 @@ export default function AdminDashboard() {
                         <span className="text-right font-medium text-xs break-all" style={{ color: '#0B1F3A' }}>{val}</span>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Compliance documents */}
+                  <div className="bg-gray-50 rounded-xl p-3 mb-4">
+                    <div className="text-xs font-medium mb-2" style={{ color: '#0B1F3A' }}>Compliance documents</div>
+                    <div className="space-y-1.5">
+                      {REQUIRED_DOCS.map((doc) => {
+                        const received = (selectedProvider.submitted_documents || []).includes(doc.id)
+                        return (
+                          <div key={doc.id} className="flex items-center justify-between text-xs">
+                            <span style={{ color: '#0B1F3A' }}>{doc.label}{doc.required && <span className="text-gray-400"> (required)</span>}</span>
+                            <span className={`font-medium ${received ? 'text-teal-600' : doc.required ? 'text-red-500' : 'text-gray-300'}`}>
+                              {received ? '✓ Received' : doc.required ? 'Missing' : 'Not submitted'}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
 
                   {/* Performance from analytics */}

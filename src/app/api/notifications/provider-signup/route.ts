@@ -3,7 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { provider } = body
+    const { provider, attachments, missingDocs, resumeUrl } = body as {
+      provider: Record<string, any>
+      attachments?: { filename: string; content: string }[]
+      missingDocs?: string[]
+      resumeUrl?: string | null
+    }
 
     const adminEmail = process.env.ADMIN_EMAIL
     const resendKey = process.env.RESEND_API_KEY
@@ -44,6 +49,14 @@ export async function POST(req: NextRequest) {
         </div>
 
         <div style="background: #fff; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 12px 12px; padding: 24px;">
+          ${missingDocs && missingDocs.length > 0 ? `
+          <div style="background: #FEF3C7; border-radius: 10px; padding: 14px 18px; margin-bottom: 20px;">
+            <p style="font-size: 13px; color: #92400E; margin: 0 0 6px;">
+              <strong>Missing documents:</strong> ${missingDocs.join(', ')}. The provider was emailed a link to finish uploading these — don't approve until they're received.
+            </p>
+            ${resumeUrl ? `<p style="font-size: 12px; color: #92400E; margin: 0;">Resume link: <a href="${resumeUrl}" style="color: #92400E;">${resumeUrl}</a></p>` : ''}
+          </div>
+          ` : ''}
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <tr style="border-bottom: 1px solid #F1F5F9;">
               <td style="padding: 10px 0; font-size: 13px; color: #6B7B8D; width: 40%;">Company</td>
@@ -113,6 +126,7 @@ export async function POST(req: NextRequest) {
         to: [adminEmail],
         subject: `New provider application: ${provider.company_name}`,
         html,
+        ...(attachments && attachments.length > 0 ? { attachments } : {}),
       }),
     })
 
@@ -120,6 +134,50 @@ export async function POST(req: NextRequest) {
       const err = await res.text()
       console.error('Resend error:', err)
       return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+    }
+
+    // Let the provider know they can finish uploading documents whenever they're ready
+    if (resumeUrl && provider.email) {
+      const providerHtml = `
+        <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: #0B1F3A; padding: 24px; border-radius: 12px 12px 0 0;">
+            <h1 style="color: #fff; margin: 0; font-size: 18px; font-weight: 600;">Application received</h1>
+            <p style="color: rgba(255,255,255,0.6); margin: 4px 0 0; font-size: 13px;">Hiyoon — ${provider.company_name}</p>
+          </div>
+          <div style="background: #fff; border: 1px solid #E2E8F0; border-top: none; border-radius: 0 0 12px 12px; padding: 24px;">
+            <p style="font-size: 14px; color: #0B1F3A; margin: 0 0 14px;">
+              Thanks for applying, ${provider.contact_person || 'there'}! We're missing a few compliance documents before we can approve your account:
+            </p>
+            <p style="font-size: 14px; color: #0B1F3A; font-weight: 600; margin: 0 0 20px;">
+              ${(missingDocs || []).join(', ')}
+            </p>
+            <p style="font-size: 13px; color: #6B7B8D; margin: 0 0 20px;">
+              No rush — use the link below whenever you have them ready. We won't review your application until we've received everything.
+            </p>
+            <div style="text-align: center;">
+              <a href="${resumeUrl}" style="display: inline-block; background: #0E9F7E; color: #fff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500;">
+                Finish my application
+              </a>
+            </div>
+          </div>
+        </div>
+      `
+      const providerRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Hiyoon <alerts@hiyoon.com>',
+          to: [provider.email],
+          subject: 'Finish your Hiyoon provider application',
+          html: providerHtml,
+        }),
+      })
+      if (!providerRes.ok) {
+        console.error('Failed to send provider resume-link email:', await providerRes.text())
+      }
     }
 
     return NextResponse.json({ success: true })
