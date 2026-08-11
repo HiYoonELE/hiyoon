@@ -121,6 +121,10 @@ export default function ProvidersPage() {
     </div>
   )
 
+  const uploadedCount = Object.keys(uploadedFiles).length
+  const requiredUploaded = REQUIRED_DOCS.filter(d => d.required && uploadedFiles[d.id]).length
+  const totalRequired = REQUIRED_DOCS.filter(d => d.required).length
+
   return (
     <>
       <Navbar />
@@ -260,9 +264,23 @@ export default function ProvidersPage() {
           </div>
 
           <SectionLabel>Compliance documents</SectionLabel>
-          <p className="text-sm text-gray-500 mb-4 -mt-2">
-            Upload what you have now, or skip this and add it later — we won&apos;t approve your account until all required documents are in, but you can submit your application today and finish this part whenever you&apos;re ready. PDF, JPG, or PNG. Max 10MB per file.
-          </p>
+
+          {/* Document progress indicator */}
+          {uploadedCount > 0 && (
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs mb-4 ${
+              requiredUploaded === totalRequired ? 'bg-teal-50 text-teal-700' : 'bg-amber-50 text-amber-700'
+            }`}>
+              <span>{requiredUploaded}/{totalRequired} required documents uploaded</span>
+              {requiredUploaded === totalRequired && <span>✓ All required documents received</span>}
+            </div>
+          )}
+
+          <div className="p-4 rounded-xl mb-4" style={{ background: '#F8FAFB', border: '1px solid #E2E8F0' }}>
+            <p className="text-sm font-medium mb-1" style={{ color: '#0B1F3A' }}>Upload now or complete later</p>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              You can submit your application now and upload documents later using a secure link we&apos;ll email you. However, your application won&apos;t be approved until all required documents are received. PDF, JPG, or PNG. Max 10MB per file.
+            </p>
+          </div>
 
           <div className="space-y-3">
             {REQUIRED_DOCS.map((doc) => {
@@ -343,6 +361,7 @@ export default function ProvidersPage() {
             </button>
             <p className="text-center text-xs text-gray-400 mt-3">
               Our team reviews every application within 2-3 business days.
+              {requiredUploaded < totalRequired && ' You can upload missing documents later via a secure link we\'ll email you.'}
             </p>
           </div>
         </div>
