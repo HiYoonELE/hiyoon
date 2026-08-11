@@ -134,11 +134,6 @@ function RequestPageInner() {
       tip: 'Select if it would be helpful for the driver to speak a language other than English. Note any specific language in the notes field below.',
     },
     {
-      field: 'background_checked',
-      label: 'Background-checked driver required',
-      tip: 'The driver has passed a criminal background check. All providers on Hiyoon are encouraged to use background-checked drivers — this flags it as a firm requirement.',
-    },
-    {
       field: 'medical_monitoring',
       label: 'Medical monitoring needed',
       tip: 'The passenger requires medical attention or monitoring during transit. Please describe the specific needs in the notes field.',
