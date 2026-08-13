@@ -52,7 +52,15 @@ export async function POST(req: NextRequest) {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      if (error.code === '23505') {
+        return NextResponse.json(
+          { error: 'An application with this email already exists. If you started an application but haven\'t finished uploading documents, check your email for the link to continue — or contact us at hello@hiyoon.com if you need help.' },
+          { status: 409 }
+        )
+      }
+      throw error
+    }
 
     const missing = missingRequiredDocs(submittedDocIds)
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
