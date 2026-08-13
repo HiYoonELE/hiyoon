@@ -139,6 +139,25 @@ export default function AdminDashboard() {
     setEmailSent(true)
   }
 
+  const resendApprovalEmail = async (provider: Provider) => {
+    try {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
+      const missing = missingRequiredDocs(provider.submitted_documents || [])
+      await fetch('/api/notifications/provider-approved', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider,
+          docsComplete: missing.length === 0,
+          resumeUrl: missing.length > 0 && provider.application_token ? `${siteUrl}/providers/complete/${provider.application_token}` : null,
+        }),
+      })
+      alert(`Approval email resent to ${provider.email}`)
+    } catch {
+      alert('Failed to resend email. Please try again.')
+    }
+  }
+
   const toggleLeadProvider = (id: string) => {
     setSelectedProviderIds((prev) => prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id])
   }
@@ -488,6 +507,15 @@ export default function AdminDashboard() {
                       {savingNote ? 'Saving...' : 'Save note'}
                     </button>
                   </div>
+                  {selectedProvider.approval_status === 'approved' && (
+                    <button
+                      onClick={() => resendApprovalEmail(selectedProvider)}
+                      className="w-full py-2 text-xs font-medium rounded-lg transition-colors mb-3"
+                      style={{ background: '#0E9F7E', color: '#fff' }}
+                    >
+                      Resend approval email
+                    </button>
+                  )}
                   <div>
                     <label className="block text-xs font-medium mb-1.5" style={{ color: '#0B1F3A' }}>Email provider</label>
                     <input type="text" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} placeholder="Subject" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs mb-2" />

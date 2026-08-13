@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
+import { missingRequiredDocs } from '@/lib/providerDocs'
 
 export async function PATCH(
   req: NextRequest,
@@ -21,6 +22,27 @@ export async function PATCH(
       .single()
 
     if (error) throw error
+
+    // If just approved, send the approval email automatically
+    if (body.approval_status === 'approved') {
+      try {
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
+        const missing = missingRequiredDocs(data.submitted_documents || [])
+        await fetch(`${siteUrl}/api/notifications/provider-approved`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            provider: data,
+            docsComplete: missing.length === 0,
+            resumeUrl: missing.length > 0 && data.application_token ? `${siteUrl}/providers/complete/${data.application_token}` : null,
+          }),
+        })
+      } catch (emailErr) {
+        console.error('Failed to send approval email:', emailErr)
+        // Non-blocking — don't fail the status update if email fails
+      }
+    }
+
     return NextResponse.json({ data })
   } catch {
     return NextResponse.json({ error: 'Failed to update provider' }, { status: 500 })
