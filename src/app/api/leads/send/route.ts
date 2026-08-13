@@ -29,6 +29,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Request not found' }, { status: 404 })
     }
 
+    // If the offer window already closed, sending leads again reopens it —
+    // otherwise newly-contacted providers would hit a "no longer accepting
+    // quotes" error before they could even submit.
+    const windowExpired = !!request.offers_close_at && new Date(request.offers_close_at) < new Date()
+    const hoursOpen = request.urgency === 'ASAP' ? 24 : 48
+    const newOffersCloseAt = windowExpired
+      ? new Date(Date.now() + hoursOpen * 60 * 60 * 1000).toISOString()
+      : request.offers_close_at
+
     // Fetch providers
     const { data: providers, error: provErr } = await supabase
       .from('providers')
@@ -135,13 +144,17 @@ export async function POST(req: NextRequest) {
       results.push({ provider_id: provider.id, company: provider.company_name, success: emailRes.ok })
     }
 
-    // Update request status
+    // Update request status (and reopen the offer window if it had closed)
     await supabase
       .from('transportation_requests')
-      .update({ status: 'sent_to_providers', updated_at: new Date().toISOString() })
+      .update({
+        status: 'sent_to_providers',
+        offers_close_at: newOffersCloseAt,
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', request_id)
 
-    return NextResponse.json({ success: true, results })
+    return NextResponse.json({ success: true, results, reopened: windowExpired })
   } catch (error: unknown) {
     console.error('Lead send error:', error)
     return NextResponse.json({ error: 'Failed to send leads' }, { status: 500 })

@@ -171,7 +171,8 @@ export default function AdminDashboard() {
       const data = await res.json()
       if (res.ok) {
         const sent = data.results?.filter((r: { success: boolean }) => r.success).length || 0
-        setLeadResult(`Successfully sent to ${sent} provider${sent !== 1 ? 's' : ''}.`)
+        const reopenedNote = data.reopened ? ' The offer window had closed and was reopened for 24-48 hours.' : ''
+        setLeadResult(`Successfully sent to ${sent} provider${sent !== 1 ? 's' : ''}.${reopenedNote}`)
         setSelectedProviderIds([])
         fetchAll()
       } else { setLeadResult('Something went wrong. Please try again.') }
