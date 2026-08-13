@@ -136,7 +136,7 @@ export default function OffersPage() {
           <div className="text-xs font-medium tracking-widest uppercase mb-3" style={{ color: '#0E9F7E' }}>Your provider</div>
           <div className="text-lg font-semibold mb-3" style={{ color: '#0B1F3A' }}>{selectedProvider.company_name}</div>
           {selectedProvider.phone && <div className="flex items-center gap-2 text-sm text-gray-600 mb-2"><span>📞</span>{selectedProvider.phone}</div>}
-          {selectedProvider.email && <div className="flex items-center gap-2 text-sm text-gray-600 mb-2"><span>✉️</span>{selectedProvider.email}</div>}
+          {selectedProvider.email && <div className="flex items-center gap-2 text-sm text-gray-600 mb-2"><span>✉️</span><span style={{ wordBreak: 'break-all' }}>{selectedProvider.email}</span></div>}
           {selectedProvider.website && <div className="flex items-center gap-2 text-sm text-gray-600"><span>🌐</span>{selectedProvider.website}</div>}
         </div>
         <p className="text-center text-xs text-gray-400">A confirmation email has been sent to you and your provider.</p>
