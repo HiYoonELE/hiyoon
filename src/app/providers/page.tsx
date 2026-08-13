@@ -47,6 +47,7 @@ export default function ProvidersPage() {
   const [error, setError] = useState('')
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, File>>({})
   const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({})
+  const [fieldErrors, setFieldErrors] = useState<{ categories_served?: boolean; vehicle_types?: boolean }>({})
 
   const update = (field: keyof ProviderFormData, value: unknown) => {
     setForm((f) => ({ ...f, [field]: value }))
@@ -59,6 +60,7 @@ export default function ProvidersPage() {
         ? f[field].filter((v) => v !== val)
         : [...f[field], val],
     }))
+    setFieldErrors((prev) => ({ ...prev, [field]: false }))
   }
 
   const toggleBool = (field: keyof ProviderFormData) => {
@@ -94,6 +96,20 @@ export default function ProvidersPage() {
       setError('Company name, email, and phone are required.')
       return
     }
+
+    const missingCategories = form.categories_served.length === 0
+    const missingVehicleTypes = form.vehicle_types.length === 0
+    if (missingCategories || missingVehicleTypes) {
+      setFieldErrors({ categories_served: missingCategories, vehicle_types: missingVehicleTypes })
+      const missing = [
+        missingCategories && 'at least one transportation category',
+        missingVehicleTypes && 'at least one vehicle type',
+      ].filter(Boolean).join(' and ')
+      setError(`Please select ${missing}.`)
+      return
+    }
+    setFieldErrors({})
+
     setSubmitting(true)
     try {
       const formData = new FormData()
@@ -199,7 +215,12 @@ export default function ProvidersPage() {
           </div>
 
           <SectionLabel>Transportation categories</SectionLabel>
-          <div className="grid grid-cols-2 gap-2">
+          {fieldErrors.categories_served && (
+            <p className="text-xs text-red-500 -mt-3 mb-3">Select at least one category.</p>
+          )}
+          <div className={`grid grid-cols-2 gap-2 rounded-xl transition-all ${
+            fieldErrors.categories_served ? 'ring-2 ring-red-300 ring-offset-2 p-1' : ''
+          }`}>
             {CATEGORIES.map((cat) => (
               <label key={cat} className={`flex items-center gap-2.5 p-3 border rounded-xl cursor-pointer text-sm transition-all ${
                 form.categories_served.includes(cat) ? 'border-teal-400 bg-teal-50' : 'border-gray-100 hover:border-gray-200'
@@ -212,7 +233,12 @@ export default function ProvidersPage() {
           </div>
 
           <SectionLabel>Vehicle types</SectionLabel>
-          <div className="grid grid-cols-2 gap-2">
+          {fieldErrors.vehicle_types && (
+            <p className="text-xs text-red-500 -mt-3 mb-3">Select at least one vehicle type.</p>
+          )}
+          <div className={`grid grid-cols-2 gap-2 rounded-xl transition-all ${
+            fieldErrors.vehicle_types ? 'ring-2 ring-red-300 ring-offset-2 p-1' : ''
+          }`}>
             {VEHICLE_TYPES.map((vt) => (
               <label key={vt} className={`flex items-center gap-2.5 p-3 border rounded-xl cursor-pointer text-sm transition-all ${
                 form.vehicle_types.includes(vt) ? 'border-teal-400 bg-teal-50' : 'border-gray-100 hover:border-gray-200'
