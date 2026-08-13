@@ -48,6 +48,7 @@ export default function ProvidersPage() {
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, File>>({})
   const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({})
   const [fieldErrors, setFieldErrors] = useState<{ categories_served?: boolean; vehicle_types?: boolean }>({})
+  const [infoMessage, setInfoMessage] = useState('')
 
   const update = (field: keyof ProviderFormData, value: unknown) => {
     setForm((f) => ({ ...f, [field]: value }))
@@ -92,6 +93,7 @@ export default function ProvidersPage() {
   }
 
   const handleSubmit = async () => {
+    setInfoMessage('')
     if (!form.company_name || !form.email || !form.phone) {
       setError('Company name, email, and phone are required.')
       return
@@ -123,6 +125,11 @@ export default function ProvidersPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong')
+      if (data.duplicate) {
+        setError('')
+        setInfoMessage(data.message)
+        return
+      }
       router.push(`/providers/confirmation?token=${data.application_token}&complete=${data.docs_complete}`)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
@@ -376,6 +383,12 @@ export default function ProvidersPage() {
           {error && (
             <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-6">
               {error}
+            </p>
+          )}
+
+          {infoMessage && (
+            <p className="text-sm rounded-lg px-3 py-2 mt-6" style={{ color: '#0B1F3A', background: '#E8F4FD', border: '1px solid #B8D8F0' }}>
+              {infoMessage}
             </p>
           )}
 

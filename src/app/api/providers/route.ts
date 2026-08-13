@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { missingRequiredDocs } from '@/lib/providerDocs'
+import { sendResumeLinkEmail } from '@/lib/sendResumeLinkEmail'
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,6 +24,8 @@ export async function POST(req: NextRequest) {
     const serviceAreasArray = body.service_areas
       ? body.service_areas.split(',').map((s: string) => s.trim()).filter(Boolean)
       : []
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
 
     const { data: provider, error } = await supabase
       .from('providers')
@@ -54,16 +57,12 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       if (error.code === '23505') {
-        return NextResponse.json(
-          { error: 'An application with this email already exists. If you started an application but haven\'t finished uploading documents, check your email for the link to continue — or contact us at hello@hiyoon.com if you need help.' },
-          { status: 409 }
-        )
+        return await handleDuplicateEmail(supabase, body.email, siteUrl)
       }
       throw error
     }
 
     const missing = missingRequiredDocs(submittedDocIds)
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
 
     // Notify admin of the new application. Awaited (not fire-and-forgotten)
     // because Vercel serverless functions can freeze right after the
@@ -97,6 +96,48 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+async function handleDuplicateEmail(
+  supabase: ReturnType<typeof createAdminClient>,
+  email: string,
+  siteUrl: string
+) {
+  const { data: existing } = await supabase
+    .from('providers')
+    .select('*')
+    .eq('email', email)
+    .single()
+
+  if (!existing) {
+    return NextResponse.json(
+      { error: 'An application with this email already exists. Contact us at hello@hiyoon.com if you need help.' },
+      { status: 409 }
+    )
+  }
+
+  const missing = missingRequiredDocs(existing.submitted_documents || [])
+
+  if (missing.length > 0 && existing.application_token) {
+    const resumeUrl = `${siteUrl}/providers/complete/${existing.application_token}`
+    await sendResumeLinkEmail({
+      provider: existing,
+      missingDocs: missing.map((d) => d.label),
+      resumeUrl,
+    })
+    return NextResponse.json({
+      duplicate: true,
+      message: 'This email address was already used for a Hiyoon provider application. We\'ve emailed you a link to finish uploading your documents — check your inbox.',
+    })
+  }
+
+  const message = existing.approval_status === 'approved'
+    ? 'This email address is already registered as an approved Hiyoon provider. If you need to update your information, contact us at hello@hiyoon.com.'
+    : existing.approval_status === 'rejected'
+    ? 'This email address was previously used for a Hiyoon provider application. Contact us at hello@hiyoon.com if you have questions about its status.'
+    : 'This email address already has a complete application on file and is awaiting review. Our team will be in touch within 2-3 business days.'
+
+  return NextResponse.json({ duplicate: true, message })
 }
 
 export async function GET() {
