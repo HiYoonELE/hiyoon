@@ -139,7 +139,11 @@ export async function POST(req: NextRequest) {
 
     // Let the provider know they can finish uploading documents whenever they're ready
     if (resumeUrl && provider.email) {
-      await sendResumeLinkEmail({ provider, missingDocs: missingDocs || [], resumeUrl })
+      await sendResumeLinkEmail({
+        provider: provider as { company_name: string; contact_person?: string; email: string },
+        missingDocs: missingDocs || [],
+        resumeUrl,
+      })
     }
 
     return NextResponse.json({ success: true })
