@@ -100,9 +100,10 @@ export async function POST(req: NextRequest) {
 
     if (updateErr) throw updateErr
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
+
     // Notify admin
     try {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
       await fetch(`${siteUrl}/api/notifications/quote-received`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -110,6 +111,21 @@ export async function POST(req: NextRequest) {
       })
     } catch (e) {
       console.error('Failed to notify admin of quote:', e)
+    }
+
+    // Notify the customer that a new offer has come in
+    try {
+      const customer = (request.customer as Record<string, string>) || {}
+      const provider = match.provider as Record<string, string>
+      if (customer.email) {
+        await fetch(`${siteUrl}/api/notifications/offer-received`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customer, request, provider, price, price_period, vehicle_type }),
+        })
+      }
+    } catch (e) {
+      console.error('Failed to notify customer of new offer:', e)
     }
 
     return NextResponse.json({ success: true })
