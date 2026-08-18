@@ -224,7 +224,7 @@ function QuoteFormInner() {
               <label className="block text-sm font-medium mb-1.5" style={{ color: '#0B1F3A' }}>
                 Notes <span className="text-gray-400 font-normal">(optional)</span>
               </label>
-              <textarea rows={3} placeholder="Any details about your service, route approach, or availability..."
+              <textarea rows={3} placeholder="e.g. Pickup between 7:30AM - 7:45AM. Any other details about your service, route approach, or availability..."
                 value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm resize-none" />
             </div>
