@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
+import { findMatchingProviderIds } from '@/lib/matchProviders'
+import { sendLeadsToProviders } from '@/lib/sendLeadsToProviders'
 
 export async function POST(req: NextRequest) {
   try {
@@ -67,11 +69,15 @@ export async function POST(req: NextRequest) {
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hiyoon.com'
 
-    // 3. Send customer confirmation + admin notification.
+    // 3. Find approved providers matching this request's category and area,
+    // so leads go out automatically instead of waiting on an admin to send them.
+    const matchingProviderIds = await findMatchingProviderIds(request)
+
+    // 4. Send customer confirmation + admin notification + provider leads.
     // These are awaited (via Promise.allSettled) instead of fired-and-forgotten,
     // because Vercel serverless functions can freeze/terminate immediately after
     // the response is returned, which was silently dropping unawaited fetches.
-    const [confirmationResult, adminNotifyResult] = await Promise.allSettled([
+    const [confirmationResult, adminNotifyResult, leadDispatchResult] = await Promise.allSettled([
       fetch(`${siteUrl}/api/notifications/customer-confirmation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -82,6 +88,9 @@ export async function POST(req: NextRequest) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ requestId: request.id, customerName: body.name }),
       }),
+      matchingProviderIds.length > 0
+        ? sendLeadsToProviders({ requestId: request.id, providerIds: matchingProviderIds })
+        : Promise.resolve(null),
     ])
 
     if (confirmationResult.status === 'rejected') {
@@ -90,9 +99,15 @@ export async function POST(req: NextRequest) {
     if (adminNotifyResult.status === 'rejected') {
       console.error('Admin new-request notification failed:', adminNotifyResult.reason)
     }
+    if (leadDispatchResult.status === 'rejected') {
+      console.error('Automatic lead dispatch failed:', leadDispatchResult.reason)
+    } else if (leadDispatchResult.value && 'error' in leadDispatchResult.value) {
+      console.error('Automatic lead dispatch failed:', leadDispatchResult.value.error)
+    }
 
     return NextResponse.json({
       success: true,
+      matched_providers: matchingProviderIds.length,
       reference_number: request.reference_number,
       offer_token: request.offer_token,
       id: request.id,
