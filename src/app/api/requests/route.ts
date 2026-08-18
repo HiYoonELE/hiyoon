@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       fetch(`${siteUrl}/api/notifications/new-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ requestId: request.id, customerName: body.name }),
+        body: JSON.stringify({ customer, request, matchedProviders: matchingProviderIds.length }),
       }),
       matchingProviderIds.length > 0
         ? sendLeadsToProviders({ requestId: request.id, providerIds: matchingProviderIds })
