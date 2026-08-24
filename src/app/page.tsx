@@ -8,13 +8,24 @@ export default function HomePage() {
       <Navbar />
       <div className="min-h-screen flex flex-col" style={{ background: '#fff' }}>
 
+        <style>{`
+          @keyframes yoonGlowPulse {
+            0%   { text-shadow: none; }
+            40%  { text-shadow: 0 0 16px rgba(14,159,126,0.55), 0 0 32px rgba(14,159,126,0.28); }
+            100% { text-shadow: none; }
+          }
+          .yoon-glow-pulse {
+            animation: yoonGlowPulse 1.6s ease-out 0.3s 1 forwards;
+          }
+        `}</style>
+
         {/* Main centered content */}
         <div className="flex-1 flex flex-col items-center justify-start sm:justify-center px-4 pt-10 sm:pt-0 sm:-mt-16">
 
           {/* Logo */}
           <div className="mb-8 text-center">
             <h1 className="font-semibold" style={{ fontSize: '52px', color: '#0B1F3A', letterSpacing: '-1px', lineHeight: 1 }}>
-              Hi<span style={{ color: '#0E9F7E' }}>yoon</span>
+              Hi<span className="yoon-glow-pulse" style={{ color: '#0E9F7E' }}>yoon</span>
             </h1>
             <p className="mt-3 text-base" style={{ color: '#6B7B8D' }}>
               School transportation, made simple
