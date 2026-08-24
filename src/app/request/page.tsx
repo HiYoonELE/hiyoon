@@ -55,7 +55,7 @@ function Tooltip({ text }: { text: string }) {
         ?
       </button>
       {show && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 leading-relaxed z-50 shadow-lg">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 leading-relaxed z-50 shadow-lg" style={{ maxWidth: 'calc(100vw - 2rem)', boxSizing: 'border-box' }}>
           {text}
           <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
         </div>
@@ -143,8 +143,8 @@ function RequestPageInner() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen" style={{ background: '#F8FAFB' }}>
-        <div className="max-w-xl mx-auto px-4 py-12">
+      <div className="min-h-screen" style={{ background: '#F8FAFB', overflowX: 'hidden' }}>
+        <div className="max-w-xl mx-auto px-4 py-12" style={{ width: '100%' }}>
           <div className="mb-8">
             <h1 className="text-2xl font-semibold mb-1" style={{ color: '#0B1F3A' }}>Find school transportation</h1>
             <p className="text-sm text-gray-500">Answer a few questions and we will match you with local providers.</p>
